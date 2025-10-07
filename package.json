@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "One-stop solution for comprehensive statistics and insights in World of Tanks: HEAT",
   "main": "src/main.js",
+  "homepage": "https://heatlabs.net",
   "scripts": {
     "start": "electron .",
     "dev": "electron . --dev",
@@ -14,7 +15,7 @@
   },
   "build": {
     "appId": "com.heatlabs.desktop",
-    "productName": "HEATLabs-Desktop",
+    "productName": "HEAT Labs Desktop",
     "directories": {
       "output": "dist"
     },
@@ -46,7 +47,8 @@
     "World of Tanks: HEAT",
     "application",
     "gaming",
-    "settings"
+    "statistics",
+    "analytics"
   ],
   "author": "HEAT Labs Team",
   "license": "GPL-3.0",
