@@ -7,7 +7,7 @@ function createWindow() {
   // Create the browser window with custom frame
   mainWindow = new BrowserWindow({
     width: 1200,
-    height: 800,
+    height: 1000,
     minWidth: 800,
     minHeight: 600,
     frame: false, // Remove default frame for custom title bar
@@ -19,10 +19,10 @@ function createWindow() {
       preload: path.join(__dirname, 'preload.js')
     },
     icon: process.platform === 'linux'
-      ? path.join(__dirname, '../assets/icon.png')
-      : process.platform === 'darwin'
-        ? path.join(__dirname, '../assets/icon.icns')
-        : path.join(__dirname, '../assets/icon.ico')
+        ? path.join(__dirname, '../assets/icon.png')
+        : process.platform === 'darwin'
+            ? path.join(__dirname, '../assets/icon.icns')
+            : path.join(__dirname, '../assets/icon.ico')
   });
 
   // Load your website
@@ -44,99 +44,249 @@ function createWindow() {
     return { action: 'deny' };
   });
 
-  // Inject custom CSS for the title bar
-  mainWindow.webContents.on('did-finish-load', () => {
+  // Inject title bar on initial load and navigation
+  const injectTitleBar = () => {
+    // Inject custom CSS for the title bar
     mainWindow.webContents.insertCSS(`
+      /* title bar styles */
       .electron-title-bar {
-        position: fixed;
-        top: 0;
-        left: 0;
-        right: 0;
-        height: 32px;
-        background: #1a1a1a;
-        color: white;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        padding: 0 10px;
-        z-index: 9999;
-        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-        font-size: 12px;
-        -webkit-app-region: drag;
-        user-select: none;
+        position: fixed !important;
+        top: 0 !important;
+        left: 0 !important;
+        right: 0 !important;
+        height: 35px !important;
+        background: #0e0e0e !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: space-between !important;
+        z-index: 999999 !important;
+        -webkit-app-region: drag !important;
+        padding: 0 8px !important;
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
+        user-select: none !important;
       }
 
-      .electron-title-bar .title {
-        margin-left: 10px;
-        font-weight: 500;
+      .electron-title-bar::before {
+        content: '' !important;
+        position: absolute !important;
+        top: 0 !important;
+        left: 0 !important;
+        right: 0 !important;
+        height: 40px !important;
+        opacity: 0.3 !important;
+        pointer-events: none !important;
       }
 
-      .electron-title-bar .controls {
-        display: flex;
-        -webkit-app-region: no-drag;
+      .electron-title-bar-left {
+        display: flex !important;
+        align-items: center !important;
+        gap: 12px !important;
+        padding-left: 1px !important;
+        height: 100% !important;
       }
 
-      .electron-title-bar .control-btn {
-        width: 30px;
-        height: 30px;
-        border: none;
-        background: transparent;
-        color: white;
-        font-size: 14px;
-        cursor: pointer;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        transition: background-color 0.2s;
+      .electron-title-bar-icon {
+        width: 20px !important;
+        height: 20px !important;
+        border-radius: 4px !important;
+        object-fit: contain !important;
+        transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
       }
 
-      .electron-title-bar .control-btn:hover {
-        background: rgba(255, 255, 255, 0.1);
+      .electron-title-bar-left:hover .electron-title-bar-icon {
+        transform: rotate(15deg) !important;
       }
 
-      .electron-title-bar .control-btn.close:hover {
-        background: #e74c3c;
+      .electron-title-bar-title {
+        font-size: 13px !important;
+        font-weight: 500 !important;
+        color: #cccccc !important;
+        letter-spacing: 0.25px !important;
+        position: relative !important;
       }
 
-      body {
-        margin-top: 32px !important;
+      .electron-title-bar-title::after {
+        content: '' !important;
+        position: absolute !important;
+        left: 0 !important;
+        bottom: -2px !important;
+        width: 100% !important;
+        height: 1px !important;
+        background: #ff8300 !important;
+        transform: scaleX(0) !important;
+        transform-origin: right !important;
+        transition: transform 0.3s ease !important;
       }
 
-      /* Ensure original header doesn't conflict */
-      header, .header, [class*="header"] {
-        margin-top: 32px !important;
+      .electron-title-bar-left:hover .electron-title-bar-title::after {
+        transform: scaleX(1) !important;
+        transform-origin: left !important;
       }
+
+      .electron-title-bar-controls {
+        display: flex !important;
+        -webkit-app-region: no-drag !important;
+        height: 100% !important;
+        align-items: center !important;
+      }
+
+      .electron-title-bar-button {
+        width: 40px !important;
+        height: 100% !important;
+        background: transparent !important;
+        border: none !important;
+        color: #cccccc !important;
+        cursor: pointer !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
+        position: relative !important;
+        border-radius: 0 !important;
+      }
+
+      .electron-title-bar-button:hover {
+        background: #252525 !important;
+        color: #ffffff !important;
+      }
+
+      .electron-title-bar-button svg {
+        width: 12px !important;
+        height: 12px !important;
+        transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
+      }
+
+      .electron-title-bar-button:hover svg {
+        transform: scale(1.1) !important;
+      }
+
+      .electron-title-bar-button.minimize-btn:hover {
+        background: #252525 !important;
+      }
+
+      .electron-title-bar-button.minimize-btn:hover svg {
+        transform: translateY(1px) !important;
+      }
+
+      .electron-title-bar-button.maximize-btn:hover {
+        background: #252525 !important;
+      }
+
+      .electron-title-bar-button.maximize-btn:hover svg {
+        transform: scale(0.9) !important;
+      }
+
+      .electron-title-bar-button.close-btn:hover {
+        background: #d13438 !important;
+        color: white !important;
+      }
+
+      .electron-title-bar-button::after {
+        content: '' !important;
+        position: absolute !important;
+        left: 0 !important;
+        top: 50% !important;
+        transform: translateY(-50%) !important;
+        width: 1px !important;
+        height: 16px !important;
+        background: #404040 !important;
+        opacity: 0.5 !important;
+      }
+
+      .electron-title-bar-button:first-child::after {
+        display: none !important;
+      }
+
+      /* Adjust for title bar */
+      nav {
+        margin-top: 35px !important;
+      }
+      
+      header {
+        margin-top: 35px !important;
+      }
+
     `);
 
     // Inject the title bar HTML
     mainWindow.webContents.executeJavaScript(`
-      if (!document.querySelector('.electron-title-bar')) {
+      (function() {
+        // Remove any existing title bar
+        const existingTitleBar = document.querySelector('.electron-title-bar');
+        if (existingTitleBar) {
+          existingTitleBar.remove();
+        }
+
+        // Create new title bar
         const titleBar = document.createElement('div');
         titleBar.className = 'electron-title-bar';
         titleBar.innerHTML = \`
-          <div class="title">HEAT Labs Desktop</div>
-          <div class="controls">
-            <button class="control-btn minimize" title="Minimize">−</button>
-            <button class="control-btn maximize" title="Maximize">□</button>
-            <button class="control-btn close" title="Close">×</button>
+          <div class="electron-title-bar-left">
+            <span class="electron-title-bar-title">HEAT Labs Desktop</span>
+          </div>
+          <div class="electron-title-bar-controls">
+            <button class="electron-title-bar-button minimize-btn" title="Minimize">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="5" y1="12" x2="19" y2="12"></line>
+              </svg>
+            </button>
+            <button class="electron-title-bar-button maximize-btn" title="Maximize">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+              </svg>
+            </button>
+            <button class="electron-title-bar-button close-btn" title="Close">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="18" y1="6" x2="6" y2="18"></line>
+                <line x1="6" y1="6" x2="18" y2="18"></line>
+              </svg>
+            </button>
           </div>
         \`;
-        document.body.prepend(titleBar);
+        
+        // Insert at the very beginning of body
+        if (document.body) {
+          document.body.insertBefore(titleBar, document.body.firstChild);
+        } else {
+          document.addEventListener('DOMContentLoaded', () => {
+            document.body.insertBefore(titleBar, document.body.firstChild);
+          });
+        }
 
         // Add event listeners for title bar buttons
-        titleBar.querySelector('.minimize').addEventListener('click', () => {
+        titleBar.querySelector('.minimize-btn').addEventListener('click', () => {
           window.electronAPI?.minimize();
         });
 
-        titleBar.querySelector('.maximize').addEventListener('click', () => {
+        titleBar.querySelector('.maximize-btn').addEventListener('click', () => {
           window.electronAPI?.maximize();
         });
 
-        titleBar.querySelector('.close').addEventListener('click', () => {
+        titleBar.querySelector('.close-btn').addEventListener('click', () => {
           window.electronAPI?.close();
         });
-      }
+      })();
     `);
+  };
+
+  // Inject on initial load
+  mainWindow.webContents.on('did-finish-load', () => {
+    injectTitleBar();
+  });
+
+  // Re-inject on navigation (this prevents disappearing)
+  mainWindow.webContents.on('did-navigate', () => {
+    injectTitleBar();
+  });
+
+  // Re-inject on in-page navigation
+  mainWindow.webContents.on('did-navigate-in-page', () => {
+    injectTitleBar();
+  });
+
+  // Re-inject after any DOM changes that might remove it
+  mainWindow.webContents.on('dom-ready', () => {
+    injectTitleBar();
   });
 }
 
