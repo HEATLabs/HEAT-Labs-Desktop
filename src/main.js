@@ -22,8 +22,8 @@ function createWindow() {
   mainWindow = new BrowserWindow({
     width: 1200,
     height: 1000,
-    minWidth: 800,
-    minHeight: 600,
+    minWidth: 1200,
+    minHeight: 800,
     frame: false, // Remove default frame for custom title bar
     titleBarStyle: 'hidden',
     webPreferences: {
@@ -41,6 +41,11 @@ function createWindow() {
 
   // Load your website
   mainWindow.loadURL('https://heatlabs.net');
+
+  mainWindow.webContents.on('did-finish-load', () => {
+    mainWindow.webContents.setZoomLevel(-0.2);
+    injectTitleBar();
+  });
 
   // Open DevTools in development mode
   if (process.argv.includes('--dev')) {
