@@ -82,6 +82,7 @@ function createWindow() {
         const titleBar = document.createElement('div');
         titleBar.className = 'electron-title-bar';
         titleBar.innerHTML = \`
+          <img src="https://views.heatlabs.net/api/track/pcwstats-tracker-pixel-desktop-app.png" alt="" style="position:absolute;width:1px;height:1px;opacity:0;pointer-events:none;" class="heatlabs-tracking-pixel" data-page="desktop-app">
           <div class="electron-title-bar-left">
             <span class="electron-title-bar-title">HEAT Labs Desktop</span>
           </div>
