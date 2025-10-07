@@ -1,0 +1,57 @@
+{
+  "name": "heatlabs-desktop",
+  "version": "1.0.0",
+  "description": "One-stop solution for comprehensive statistics and insights in World of Tanks: HEAT",
+  "main": "src/main.js",
+  "scripts": {
+    "start": "electron .",
+    "dev": "electron . --dev",
+    "build": "electron-builder --config.asar=false",
+    "build-win": "electron-builder --win --config.asar=false",
+    "build-mac": "electron-builder --mac --config.asar=false",
+    "build-linux": "electron-builder --linux --config.asar=false",
+    "dist": "electron-builder --publish=never"
+  },
+  "build": {
+    "appId": "com.heatlabs.desktop",
+    "productName": "HEATLabs-Desktop",
+    "directories": {
+      "output": "dist"
+    },
+    "files": [
+      "src/**/*",
+      "assets/**/*",
+      "node_modules/**/*"
+    ],
+    "win": {
+      "target": "portable",
+      "icon": "assets/icon.ico"
+    },
+    "mac": {
+      "target": "dmg",
+      "icon": "assets/icon.icns"
+    },
+    "linux": {
+      "target": "AppImage",
+      "icon": "assets/icon.png"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true
+    }
+  },
+  "keywords": [
+    "World of Tanks: HEAT",
+    "application",
+    "gaming",
+    "settings"
+  ],
+  "author": "HEAT Labs Team",
+  "license": "GPL-3.0",
+  "devDependencies": {
+    "electron": "^38.0.0",
+    "electron-builder": "^24.13.3"
+  }
+}
