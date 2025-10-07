@@ -1,0 +1,157 @@
+/* Title bar styles */
+.electron-title-bar {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    height: 35px !important;
+    background: #0e0e0e !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    z-index: 999999 !important;
+    -webkit-app-region: drag !important;
+    padding: 0 8px !important;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
+    user-select: none !important;
+}
+
+.electron-title-bar::before {
+    content: '' !important;
+    position: absolute !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    height: 40px !important;
+    opacity: 0.3 !important;
+    pointer-events: none !important;
+}
+
+.electron-title-bar-left {
+    display: flex !important;
+    align-items: center !important;
+    gap: 12px !important;
+    padding-left: 1px !important;
+    height: 100% !important;
+}
+
+.electron-title-bar-icon {
+    width: 20px !important;
+    height: 20px !important;
+    border-radius: 4px !important;
+    object-fit: contain !important;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+.electron-title-bar-left:hover .electron-title-bar-icon {
+    transform: rotate(15deg) !important;
+}
+
+.electron-title-bar-title {
+    font-size: 13px !important;
+    font-weight: 500 !important;
+    color: #cccccc !important;
+    letter-spacing: 0.25px !important;
+    position: relative !important;
+}
+
+.electron-title-bar-title::after {
+    content: '' !important;
+    position: absolute !important;
+    left: 0 !important;
+    bottom: -2px !important;
+    width: 100% !important;
+    height: 1px !important;
+    background: #ff8300 !important;
+    transform: scaleX(0) !important;
+    transform-origin: right !important;
+    transition: transform 0.3s ease !important;
+}
+
+.electron-title-bar-left:hover .electron-title-bar-title::after {
+    transform: scaleX(1) !important;
+    transform-origin: left !important;
+}
+
+.electron-title-bar-controls {
+    display: flex !important;
+    -webkit-app-region: no-drag !important;
+    height: 100% !important;
+    align-items: center !important;
+}
+
+.electron-title-bar-button {
+    width: 40px !important;
+    height: 100% !important;
+    background: transparent !important;
+    border: none !important;
+    color: #cccccc !important;
+    cursor: pointer !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    position: relative !important;
+    border-radius: 0 !important;
+}
+
+.electron-title-bar-button:hover {
+    background: #252525 !important;
+    color: #ffffff !important;
+}
+
+.electron-title-bar-button svg {
+    width: 12px !important;
+    height: 12px !important;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+.electron-title-bar-button:hover svg {
+    transform: scale(1.1) !important;
+}
+
+.electron-title-bar-button.minimize-btn:hover {
+    background: #252525 !important;
+}
+
+.electron-title-bar-button.minimize-btn:hover svg {
+    transform: translateY(1px) !important;
+}
+
+.electron-title-bar-button.maximize-btn:hover {
+    background: #252525 !important;
+}
+
+.electron-title-bar-button.maximize-btn:hover svg {
+    transform: scale(0.9) !important;
+}
+
+.electron-title-bar-button.close-btn:hover {
+    background: #d13438 !important;
+    color: white !important;
+}
+
+.electron-title-bar-button::after {
+    content: '' !important;
+    position: absolute !important;
+    left: 0 !important;
+    top: 50% !important;
+    transform: translateY(-50%) !important;
+    width: 1px !important;
+    height: 16px !important;
+    background: #404040 !important;
+    opacity: 0.5 !important;
+}
+
+.electron-title-bar-button:first-child::after {
+    display: none !important;
+}
+
+/* Adjust for title bar */
+nav {
+    margin-top: 35px !important;
+}
+
+header {
+    margin-top: 35px !important;
+}
