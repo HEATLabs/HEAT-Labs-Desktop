@@ -1,4 +1,8 @@
-const { app, BrowserWindow, ipcMain } = require('electron');
+const {
+  app,
+  BrowserWindow,
+  ipcMain
+} = require('electron');
 const path = require('path');
 
 let mainWindow;
@@ -18,11 +22,11 @@ function createWindow() {
       enableRemoteModule: false,
       preload: path.join(__dirname, 'preload.js')
     },
-    icon: process.platform === 'linux'
-        ? path.join(__dirname, '../assets/icon.png')
-        : process.platform === 'darwin'
-            ? path.join(__dirname, '../assets/icon.icns')
-            : path.join(__dirname, '../assets/icon.ico')
+    icon: process.platform === 'linux' ?
+        path.join(__dirname, '../assets/icon.png') :
+        process.platform === 'darwin' ?
+            path.join(__dirname, '../assets/icon.icns') :
+            path.join(__dirname, '../assets/icon.ico')
   });
 
   // Load your website
@@ -39,9 +43,13 @@ function createWindow() {
   });
 
   // Handle navigation to external links
-  mainWindow.webContents.setWindowOpenHandler(({ url }) => {
+  mainWindow.webContents.setWindowOpenHandler(({
+                                                 url
+                                               }) => {
     require('electron').shell.openExternal(url);
-    return { action: 'deny' };
+    return {
+      action: 'deny'
+    };
   });
 
   // Inject title bar on initial load and navigation
