@@ -5,9 +5,14 @@ const {
 } = require('electron');
 const path = require('path');
 const fs = require('fs');
+const DiscordRichPresence = require('./discord-rpc');
 
 let mainWindow;
 let titleBarCSS = '';
+let discordRPC = null;
+
+// Discord Application Client ID
+const DISCORD_CLIENT_ID = '1373472140279549963';
 
 function createWindow() {
   // Load the title bar CSS file
@@ -33,10 +38,8 @@ function createWindow() {
       preload: path.join(__dirname, 'preload.js')
     },
     icon: process.platform === 'linux' ?
-        path.join(__dirname, '../assets/icon.png') :
-        process.platform === 'darwin' ?
-            path.join(__dirname, '../assets/icon.icns') :
-            path.join(__dirname, '../assets/icon.ico')
+        path.join(__dirname, '../assets/icon.png') : process.platform === 'darwin' ?
+            path.join(__dirname, '../assets/icon.icns') : path.join(__dirname, '../assets/icon.ico')
   });
 
   // Load your website
@@ -55,6 +58,10 @@ function createWindow() {
   // Handle window closed
   mainWindow.on('closed', () => {
     mainWindow = null;
+    // Disconnect Discord RPC when window closes
+    if (discordRPC) {
+      discordRPC.disconnect();
+    }
   });
 
   // Handle navigation to external links
@@ -65,6 +72,13 @@ function createWindow() {
     return {
       action: 'deny'
     };
+  });
+
+  // Update Discord RPC when page title changes
+  mainWindow.webContents.on('page-title-updated', (event, title) => {
+    if (discordRPC && discordRPC.isConnected()) {
+      discordRPC.updateWithPage(title);
+    }
   });
 
   // Inject title bar on initial load and navigation
@@ -157,10 +171,35 @@ function createWindow() {
   });
 }
 
+// Initialize Discord Rich Presence
+function initializeDiscordRPC() {
+  if (DISCORD_CLIENT_ID && DISCORD_CLIENT_ID !== 'CLIENT_ID_HERE') {
+    discordRPC = new DiscordRichPresence(DISCORD_CLIENT_ID);
+    discordRPC.initialize().then(success => {
+      if (success) {
+        console.log('Discord Rich Presence initialized successfully');
+      }
+    });
+  } else {
+    console.warn('Discord Client ID not configured.');
+  }
+}
+
 // App event listeners
-app.whenReady().then(createWindow);
+app.whenReady().then(() => {
+  createWindow();
+  // Initialize Discord RPC after a short delay
+  setTimeout(() => {
+    initializeDiscordRPC();
+  }, 2000);
+});
 
 app.on('window-all-closed', () => {
+  // Disconnect Discord RPC
+  if (discordRPC) {
+    discordRPC.disconnect();
+  }
+
   if (process.platform !== 'darwin') {
     app.quit();
   }
@@ -169,6 +208,13 @@ app.on('window-all-closed', () => {
 app.on('activate', () => {
   if (BrowserWindow.getAllWindows().length === 0) {
     createWindow();
+  }
+});
+
+app.on('before-quit', () => {
+  // Ensure Discord RPC is disconnected before quitting
+  if (discordRPC) {
+    discordRPC.disconnect();
   }
 });
 
