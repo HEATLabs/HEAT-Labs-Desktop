@@ -53,7 +53,7 @@ class DiscordRichPresence {
             largeImageKey: 'heatlabs_logo',
             largeImageText: 'HEAT Labs Desktop',
             smallImageKey: 'watching_icon',
-            smallImageText: 'Active',
+            smallImageText: 'World of Tanks: HEAT',
             instance: false,
             buttons: [{
                 label: 'Visit HEAT Labs',
