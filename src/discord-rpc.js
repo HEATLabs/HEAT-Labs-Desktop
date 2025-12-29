@@ -56,9 +56,9 @@ class DiscordRichPresence {
             smallImageText: 'World of Tanks: HEAT',
             instance: false,
             buttons: [{
-                label: 'Visit HEAT Labs',
-                url: 'https://heatlabs.net'
-            },
+                    label: 'Visit HEAT Labs',
+                    url: 'https://heatlabs.net'
+                },
                 {
                     label: 'Join The Community',
                     url: 'https://discord.heatlabs.net'

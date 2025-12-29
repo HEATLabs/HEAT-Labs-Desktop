@@ -1,15 +1,15 @@
 const {
-  contextBridge,
-  ipcRenderer
+    contextBridge,
+    ipcRenderer
 } = require('electron');
 
 // Expose protected methods
 contextBridge.exposeInMainWorld('electronAPI', {
-  minimize: () => ipcRenderer.invoke('window-minimize'),
-  maximize: () => ipcRenderer.invoke('window-maximize'),
-  close: () => ipcRenderer.invoke('window-close'),
+    minimize: () => ipcRenderer.invoke('window-minimize'),
+    maximize: () => ipcRenderer.invoke('window-maximize'),
+    close: () => ipcRenderer.invoke('window-close'),
 
-  // APIs
-  platform: process.platform,
-  versions: process.versions
+    // APIs
+    platform: process.platform,
+    versions: process.versions
 });

@@ -1,7 +1,7 @@
 const {
-  app,
-  BrowserWindow,
-  ipcMain
+    app,
+    BrowserWindow,
+    ipcMain
 } = require('electron');
 const path = require('path');
 const fs = require('fs');
@@ -15,81 +15,81 @@ let discordRPC = null;
 const DISCORD_CLIENT_ID = '1373472140279549963';
 
 function createWindow() {
-  // Load the title bar CSS file
-  const cssPath = path.join(__dirname, 'titlebar.css');
-  try {
-    titleBarCSS = fs.readFileSync(cssPath, 'utf8');
-  } catch (error) {
-    console.error('Failed to load titlebar.css:', error);
-  }
+    // Load the title bar CSS file
+    const cssPath = path.join(__dirname, 'titlebar.css');
+    try {
+        titleBarCSS = fs.readFileSync(cssPath, 'utf8');
+    } catch (error) {
+        console.error('Failed to load titlebar.css:', error);
+    }
 
-  // Create the browser window with custom frame
-  mainWindow = new BrowserWindow({
-    width: 1200,
-    height: 1000,
-    minWidth: 1200,
-    minHeight: 800,
-    frame: false,
-    titleBarStyle: 'hidden',
-    webPreferences: {
-      nodeIntegration: false,
-      contextIsolation: true,
-      enableRemoteModule: false,
-      preload: path.join(__dirname, 'preload.js')
-    },
-    icon: process.platform === 'linux' ?
-        path.join(__dirname, '../assets/icon.png') : process.platform === 'darwin' ?
+    // Create the browser window with custom frame
+    mainWindow = new BrowserWindow({
+        width: 1200,
+        height: 1000,
+        minWidth: 1200,
+        minHeight: 800,
+        frame: false,
+        titleBarStyle: 'hidden',
+        webPreferences: {
+            nodeIntegration: false,
+            contextIsolation: true,
+            enableRemoteModule: false,
+            preload: path.join(__dirname, 'preload.js')
+        },
+        icon: process.platform === 'linux' ?
+            path.join(__dirname, '../assets/icon.png') : process.platform === 'darwin' ?
             path.join(__dirname, '../assets/icon.icns') : path.join(__dirname, '../assets/icon.ico')
-  });
+    });
 
-  // Load HEAT Labs
-  mainWindow.loadURL('https://heatlabs.net');
+    // Load HEAT Labs
+    mainWindow.loadURL('https://heatlabs.net');
 
-  mainWindow.webContents.on('did-finish-load', () => {
-    mainWindow.webContents.setZoomLevel(-0.2);
-    injectTitleBar();
-  });
+    mainWindow.webContents.on('did-finish-load', () => {
+        mainWindow.webContents.setZoomLevel(-0.2);
+        injectTitleBar();
+    });
 
-  // Open DevTools in development mode
-  if (process.argv.includes('--dev')) {
-    mainWindow.webContents.openDevTools();
-  }
-
-  // Handle window closed
-  mainWindow.on('closed', () => {
-    mainWindow = null;
-    // Disconnect Discord RPC when window closes
-    if (discordRPC) {
-      discordRPC.disconnect();
-    }
-  });
-
-  // Handle navigation to external links
-  mainWindow.webContents.setWindowOpenHandler(({
-                                                 url
-                                               }) => {
-    require('electron').shell.openExternal(url);
-    return {
-      action: 'deny'
-    };
-  });
-
-  // Update Discord RPC when page title changes
-  mainWindow.webContents.on('page-title-updated', (event, title) => {
-    if (discordRPC && discordRPC.isConnected()) {
-      discordRPC.updateWithPage(title);
-    }
-  });
-
-  // Inject title bar on initial load and navigation
-  const injectTitleBar = () => {
-    // Inject CSS from file
-    if (titleBarCSS) {
-      mainWindow.webContents.insertCSS(titleBarCSS);
+    // Open DevTools in development mode
+    if (process.argv.includes('--dev')) {
+        mainWindow.webContents.openDevTools();
     }
 
-    // Inject the title bar HTML
-    mainWindow.webContents.executeJavaScript(`
+    // Handle window closed
+    mainWindow.on('closed', () => {
+        mainWindow = null;
+        // Disconnect Discord RPC when window closes
+        if (discordRPC) {
+            discordRPC.disconnect();
+        }
+    });
+
+    // Handle navigation to external links
+    mainWindow.webContents.setWindowOpenHandler(({
+        url
+    }) => {
+        require('electron').shell.openExternal(url);
+        return {
+            action: 'deny'
+        };
+    });
+
+    // Update Discord RPC when page title changes
+    mainWindow.webContents.on('page-title-updated', (event, title) => {
+        if (discordRPC && discordRPC.isConnected()) {
+            discordRPC.updateWithPage(title);
+        }
+    });
+
+    // Inject title bar on initial load and navigation
+    const injectTitleBar = () => {
+        // Inject CSS from file
+        if (titleBarCSS) {
+            mainWindow.webContents.insertCSS(titleBarCSS);
+        }
+
+        // Inject the title bar HTML
+        mainWindow.webContents.executeJavaScript(`
       (function() {
         // Remove any existing title bar
         const existingTitleBar = document.querySelector('.electron-title-bar');
@@ -124,7 +124,7 @@ function createWindow() {
             </button>
           </div>
         \`;
-        
+
         // Insert at the very beginning of body
         if (document.body) {
           document.body.insertBefore(titleBar, document.body.firstChild);
@@ -148,95 +148,95 @@ function createWindow() {
         });
       })();
     `);
-  };
+    };
 
-  // Inject on initial load
-  mainWindow.webContents.on('did-finish-load', () => {
-    injectTitleBar();
-  });
+    // Inject on initial load
+    mainWindow.webContents.on('did-finish-load', () => {
+        injectTitleBar();
+    });
 
-  // Re-inject on navigation
-  mainWindow.webContents.on('did-navigate', () => {
-    injectTitleBar();
-  });
+    // Re-inject on navigation
+    mainWindow.webContents.on('did-navigate', () => {
+        injectTitleBar();
+    });
 
-  // Re-inject on in-page navigation
-  mainWindow.webContents.on('did-navigate-in-page', () => {
-    injectTitleBar();
-  });
+    // Re-inject on in-page navigation
+    mainWindow.webContents.on('did-navigate-in-page', () => {
+        injectTitleBar();
+    });
 
-  // Re-inject after any DOM changes that might remove it
-  mainWindow.webContents.on('dom-ready', () => {
-    injectTitleBar();
-  });
+    // Re-inject after any DOM changes that might remove it
+    mainWindow.webContents.on('dom-ready', () => {
+        injectTitleBar();
+    });
 }
 
 // Initialize Discord Rich Presence
 function initializeDiscordRPC() {
-  if (DISCORD_CLIENT_ID && DISCORD_CLIENT_ID !== 'CLIENT_ID_HERE') {
-    discordRPC = new DiscordRichPresence(DISCORD_CLIENT_ID);
-    discordRPC.initialize().then(success => {
-      if (success) {
-        console.log('Discord Rich Presence initialized successfully');
-      }
-    });
-  } else {
-    console.warn('Discord Client ID not configured.');
-  }
+    if (DISCORD_CLIENT_ID && DISCORD_CLIENT_ID !== 'CLIENT_ID_HERE') {
+        discordRPC = new DiscordRichPresence(DISCORD_CLIENT_ID);
+        discordRPC.initialize().then(success => {
+            if (success) {
+                console.log('Discord Rich Presence initialized successfully');
+            }
+        });
+    } else {
+        console.warn('Discord Client ID not configured.');
+    }
 }
 
 // App event listeners
 app.whenReady().then(() => {
-  createWindow();
-  // Initialize Discord RPC
-  setTimeout(() => {
-    initializeDiscordRPC();
-  }, 2000);
+    createWindow();
+    // Initialize Discord RPC
+    setTimeout(() => {
+        initializeDiscordRPC();
+    }, 2000);
 });
 
 app.on('window-all-closed', () => {
-  // Disconnect Discord RPC
-  if (discordRPC) {
-    discordRPC.disconnect();
-  }
+    // Disconnect Discord RPC
+    if (discordRPC) {
+        discordRPC.disconnect();
+    }
 
-  if (process.platform !== 'darwin') {
-    app.quit();
-  }
+    if (process.platform !== 'darwin') {
+        app.quit();
+    }
 });
 
 app.on('activate', () => {
-  if (BrowserWindow.getAllWindows().length === 0) {
-    createWindow();
-  }
+    if (BrowserWindow.getAllWindows().length === 0) {
+        createWindow();
+    }
 });
 
 app.on('before-quit', () => {
-  // Ensure Discord RPC is disconnected before quitting
-  if (discordRPC) {
-    discordRPC.disconnect();
-  }
+    // Ensure Discord RPC is disconnected before quitting
+    if (discordRPC) {
+        discordRPC.disconnect();
+    }
 });
 
 // Handle IPC messages from renderer
 ipcMain.handle('window-minimize', () => {
-  if (mainWindow) {
-    mainWindow.minimize();
-  }
+    if (mainWindow) {
+        mainWindow.minimize();
+    }
 });
 
 ipcMain.handle('window-maximize', () => {
-  if (mainWindow) {
-    if (mainWindow.isMaximized()) {
-      mainWindow.unmaximize();
-    } else {
-      mainWindow.maximize();
+    if (mainWindow) {
+        if (mainWindow.isMaximized()) {
+            mainWindow.unmaximize();
+        } else {
+            mainWindow.maximize();
+        }
     }
-  }
 });
 
 ipcMain.handle('window-close', () => {
-  if (mainWindow) {
-    mainWindow.close();
-  }
+    if (mainWindow) {
+        mainWindow.close();
+    }
 });
