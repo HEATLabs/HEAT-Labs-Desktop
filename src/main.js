@@ -29,7 +29,7 @@ function createWindow() {
     height: 1000,
     minWidth: 1200,
     minHeight: 800,
-    frame: false, // Remove default frame for custom title bar
+    frame: false,
     titleBarStyle: 'hidden',
     webPreferences: {
       nodeIntegration: false,
@@ -42,7 +42,7 @@ function createWindow() {
             path.join(__dirname, '../assets/icon.icns') : path.join(__dirname, '../assets/icon.ico')
   });
 
-  // Load your website
+  // Load HEAT Labs
   mainWindow.loadURL('https://heatlabs.net');
 
   mainWindow.webContents.on('did-finish-load', () => {
@@ -155,7 +155,7 @@ function createWindow() {
     injectTitleBar();
   });
 
-  // Re-inject on navigation (this prevents disappearing)
+  // Re-inject on navigation
   mainWindow.webContents.on('did-navigate', () => {
     injectTitleBar();
   });
@@ -188,7 +188,7 @@ function initializeDiscordRPC() {
 // App event listeners
 app.whenReady().then(() => {
   createWindow();
-  // Initialize Discord RPC after a short delay
+  // Initialize Discord RPC
   setTimeout(() => {
     initializeDiscordRPC();
   }, 2000);

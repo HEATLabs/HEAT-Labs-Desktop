@@ -22,7 +22,7 @@ class DiscordRichPresence {
             // Set initial presence
             this.updatePresence();
 
-            // Update presence every 15 seconds to keep it fresh
+            // Update presence every 15 seconds
             setInterval(() => {
                 if (this.connected) {
                     this.updatePresence();
@@ -73,7 +73,7 @@ class DiscordRichPresence {
     }
 
     updateWithPage(pageTitle) {
-        // Clean the page title by removing " - HEAT Labs" suffix
+        // Clean the page title
         const cleanTitle = pageTitle.replace(/ - HEAT Labs$/i, '').trim();
         this.updatePresence(`Viewing ${cleanTitle}`);
     }

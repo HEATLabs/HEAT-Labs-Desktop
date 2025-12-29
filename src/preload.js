@@ -3,7 +3,7 @@ const {
   ipcRenderer
 } = require('electron');
 
-// Expose protected methods that allow the renderer process to use
+// Expose protected methods
 contextBridge.exposeInMainWorld('electronAPI', {
   minimize: () => ipcRenderer.invoke('window-minimize'),
   maximize: () => ipcRenderer.invoke('window-maximize'),
