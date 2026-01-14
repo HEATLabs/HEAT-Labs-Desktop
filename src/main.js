@@ -39,7 +39,7 @@ function createWindow() {
         },
         icon: process.platform === 'linux' ?
             path.join(__dirname, '../assets/icon.png') : process.platform === 'darwin' ?
-            path.join(__dirname, '../assets/icon.icns') : path.join(__dirname, '../assets/icon.ico')
+                path.join(__dirname, '../assets/icon.icns') : path.join(__dirname, '../assets/icon.ico')
     });
 
     // Load HEAT Labs
@@ -47,7 +47,6 @@ function createWindow() {
 
     mainWindow.webContents.on('did-finish-load', () => {
         mainWindow.webContents.setZoomLevel(-0.2);
-        injectTitleBar();
     });
 
     // Open DevTools in development mode
@@ -66,8 +65,8 @@ function createWindow() {
 
     // Handle navigation to external links
     mainWindow.webContents.setWindowOpenHandler(({
-        url
-    }) => {
+                                                     url
+                                                 }) => {
         require('electron').shell.openExternal(url);
         return {
             action: 'deny'
@@ -91,67 +90,123 @@ function createWindow() {
         // Inject the title bar HTML
         mainWindow.webContents.executeJavaScript(`
       (function() {
-        // Remove any existing title bar
-        const existingTitleBar = document.querySelector('.electron-title-bar');
-        if (existingTitleBar) {
-          existingTitleBar.remove();
+        // Prevent multiple injections by checking for our marker
+        if (window.__titleBarInitialized) {
+          return;
         }
+        window.__titleBarInitialized = true;
 
-        // Create new title bar
-        const titleBar = document.createElement('div');
-        titleBar.className = 'electron-title-bar';
-        titleBar.innerHTML = \`
-          <img src="https://views.heatlabs.net/api/track/pcwstats-tracker-pixel-desktop-app.png" alt="HEAT Labs Tracking View Counter" style="position:absolute;width:1px;height:1px;opacity:0;pointer-events:none;" class="heatlabs-tracking-pixel" data-page="desktop-app">
-          <div class="electron-title-bar-left">
-            <span class="electron-title-bar-title">HEAT Labs Desktop</span>
-          </div>
-          <div class="electron-title-bar-controls">
-            <button class="electron-title-bar-button minimize-btn" title="Minimize">
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <line x1="5" y1="12" x2="19" y2="12"></line>
-              </svg>
-            </button>
-            <button class="electron-title-bar-button maximize-btn" title="Maximize">
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
-              </svg>
-            </button>
-            <button class="electron-title-bar-button close-btn" title="Close">
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <line x1="18" y1="6" x2="6" y2="18"></line>
-                <line x1="6" y1="6" x2="18" y2="18"></line>
-              </svg>
-            </button>
-          </div>
-        \`;
+        let titleBar = null;
 
-        // Insert at the very beginning of body
-        if (document.body) {
-          document.body.insertBefore(titleBar, document.body.firstChild);
-        } else {
-          document.addEventListener('DOMContentLoaded', () => {
+        // Function to create title bar element
+        const createTitleBar = () => {
+          const bar = document.createElement('div');
+          bar.className = 'electron-title-bar';
+          bar.innerHTML = \`
+            <img src="https://views.heatlabs.net/api/track/pcwstats-tracker-pixel-desktop-app.png" alt="HEAT Labs Tracking View Counter" style="position:absolute;width:1px;height:1px;opacity:0;pointer-events:none;" class="heatlabs-tracking-pixel" data-page="desktop-app">
+            <div class="electron-title-bar-left">
+              <span class="electron-title-bar-title">HEAT Labs Desktop</span>
+            </div>
+            <div class="electron-title-bar-controls">
+              <button class="electron-title-bar-button minimize-btn" title="Minimize">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <line x1="5" y1="12" x2="19" y2="12"></line>
+                </svg>
+              </button>
+              <button class="electron-title-bar-button maximize-btn" title="Maximize">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                </svg>
+              </button>
+              <button class="electron-title-bar-button close-btn" title="Close">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <line x1="18" y1="6" x2="6" y2="18"></line>
+                  <line x1="6" y1="6" x2="18" y2="18"></line>
+                </svg>
+              </button>
+            </div>
+          \`;
+          return bar;
+        };
+
+        // Function to add event listeners
+        const attachEventListeners = (bar) => {
+          const minimizeBtn = bar.querySelector('.minimize-btn');
+          const maximizeBtn = bar.querySelector('.maximize-btn');
+          const closeBtn = bar.querySelector('.close-btn');
+
+          if (minimizeBtn) {
+            minimizeBtn.addEventListener('click', () => {
+              window.electronAPI?.minimize();
+            });
+          }
+
+          if (maximizeBtn) {
+            maximizeBtn.addEventListener('click', () => {
+              window.electronAPI?.maximize();
+            });
+          }
+
+          if (closeBtn) {
+            closeBtn.addEventListener('click', () => {
+              window.electronAPI?.close();
+            });
+          }
+        };
+
+        // Function to ensure title bar is present
+        const ensureTitleBar = () => {
+          if (!document.body) return;
+          
+          const existing = document.querySelector('.electron-title-bar');
+          
+          if (!existing) {
+            // Create and insert new title bar
+            titleBar = createTitleBar();
             document.body.insertBefore(titleBar, document.body.firstChild);
-          });
+            attachEventListeners(titleBar);
+          } else if (document.body.firstChild !== existing) {
+            // Move to top if it's not already there
+            document.body.insertBefore(existing, document.body.firstChild);
+          }
+        };
+
+        // Initial insertion
+        if (document.body) {
+          ensureTitleBar();
+        } else {
+          document.addEventListener('DOMContentLoaded', ensureTitleBar);
         }
 
-        // Add event listeners for title bar buttons
-        titleBar.querySelector('.minimize-btn').addEventListener('click', () => {
-          window.electronAPI?.minimize();
+        // Watch for DOM changes and ensure title bar stays in place
+        const observer = new MutationObserver(() => {
+          ensureTitleBar();
         });
 
-        titleBar.querySelector('.maximize-btn').addEventListener('click', () => {
-          window.electronAPI?.maximize();
-        });
+        // Start observing when body is available
+        const startObserving = () => {
+          if (document.body) {
+            observer.observe(document.body, {
+              childList: true,
+              subtree: false
+            });
+          }
+        };
 
-        titleBar.querySelector('.close-btn').addEventListener('click', () => {
-          window.electronAPI?.close();
-        });
+        if (document.body) {
+          startObserving();
+        } else {
+          document.addEventListener('DOMContentLoaded', startObserving);
+        }
+
+        // Store observer globally to prevent garbage collection
+        window.__titleBarObserver = observer;
       })();
     `);
     };
 
-    // Inject on initial load
-    mainWindow.webContents.on('did-finish-load', () => {
+    // Inject on page load events
+    mainWindow.webContents.on('dom-ready', () => {
         injectTitleBar();
     });
 
@@ -162,11 +217,6 @@ function createWindow() {
 
     // Re-inject on in-page navigation
     mainWindow.webContents.on('did-navigate-in-page', () => {
-        injectTitleBar();
-    });
-
-    // Re-inject after any DOM changes that might remove it
-    mainWindow.webContents.on('dom-ready', () => {
         injectTitleBar();
     });
 }
