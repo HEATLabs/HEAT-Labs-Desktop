@@ -1,0 +1,69 @@
+{
+  "achievements": [
+    {
+      "id": 1,
+      "task": "Use HEAT Labs for 10 minutes",
+      "name": "H - First Steps",
+      "type": "playtime",
+      "steamApiName": "PLAYTIME_10_MINUTE",
+      "requirement": 600
+    },
+    {
+      "id": 2,
+      "task": "Use HEAT Labs for 30 minutes",
+      "name": "E - Getting Into It",
+      "type": "playtime",
+      "steamApiName": "PLAYTIME_30_MINUTE",
+      "requirement": 1800
+    },
+    {
+      "id": 3,
+      "task": "Use HEAT Labs for 1 hour",
+      "name": "A - Settling In",
+      "type": "playtime",
+      "steamApiName": "PLAYTIME_01_HOUR",
+      "requirement": 3600
+    },
+    {
+      "id": 4,
+      "task": "Use HEAT Labs for 2 hours",
+      "name": "T - Dedicated Player",
+      "type": "playtime",
+      "steamApiName": "PLAYTIME_02_HOUR",
+      "requirement": 7200
+    },
+    {
+      "id": 5,
+      "task": "Use HEAT Labs for 5 hours",
+      "name": "L - Committed",
+      "type": "playtime",
+      "steamApiName": "PLAYTIME_05_HOUR",
+      "requirement": 18000
+    },
+    {
+      "id": 6,
+      "task": "Use HEAT Labs for 10 hours",
+      "name": "A - Veteran",
+      "type": "playtime",
+      "steamApiName": "PLAYTIME_10_HOUR",
+      "requirement": 36000
+    },
+    {
+      "id": 7,
+      "icon": "B",
+      "task": "Use HEAT Labs for 25 hours",
+      "name": "B - Hardcore",
+      "type": "playtime",
+      "steamApiName": "PLAYTIME_25_HOUR",
+      "requirement": 90000
+    },
+    {
+      "id": 8,
+      "task": "Use HEAT Labs for 50 hours",
+      "name": "S - Addicted",
+      "type": "playtime",
+      "steamApiName": "PLAYTIME_50_HOUR",
+      "requirement": 180000
+    }
+  ]
+}
