@@ -6,10 +6,12 @@ const {
 const path = require('path');
 const fs = require('fs');
 const DiscordRichPresence = require('./discord-rpc');
+const AchievementManager = require('./achievements');
 
 let mainWindow;
 let titleBarCSS = '';
 let discordRPC = null;
+let achievementManager = null;
 
 // Discord Application Client ID
 const DISCORD_CLIENT_ID = '1373472140279549963';
@@ -39,7 +41,7 @@ function createWindow() {
         },
         icon: process.platform === 'linux' ?
             path.join(__dirname, '../assets/icon.png') : process.platform === 'darwin' ?
-                path.join(__dirname, '../assets/icon.icns') : path.join(__dirname, '../assets/icon.ico')
+            path.join(__dirname, '../assets/icon.icns') : path.join(__dirname, '../assets/icon.ico')
     });
 
     // Load HEAT Labs
@@ -61,12 +63,18 @@ function createWindow() {
         if (discordRPC) {
             discordRPC.disconnect();
         }
+
+        // Shutdown Achievement Manager when window closes
+        if (achievementManager) {
+            achievementManager.shutdown();
+            achievementManager = null;
+        }
     });
 
     // Handle navigation to external links
     mainWindow.webContents.setWindowOpenHandler(({
-                                                     url
-                                                 }) => {
+        url
+    }) => {
         require('electron').shell.openExternal(url);
         return {
             action: 'deny'
@@ -157,9 +165,9 @@ function createWindow() {
         // Function to ensure title bar is present
         const ensureTitleBar = () => {
           if (!document.body) return;
-          
+
           const existing = document.querySelector('.electron-title-bar');
-          
+
           if (!existing) {
             // Create and insert new title bar
             titleBar = createTitleBar();
@@ -235,19 +243,53 @@ function initializeDiscordRPC() {
     }
 }
 
+// Initialize Achievement Manager
+function initializeAchievementManager() {
+    console.log('Initializing Achievement Manager...');
+    achievementManager = new AchievementManager();
+    achievementManager.initialize().then(success => {
+        if (success) {
+            console.log('Achievement Manager initialized successfully');
+
+            // Log initial playtime
+            const playtime = achievementManager.getFormattedPlayTime();
+            console.log(`Initial playtime: ${playtime.formatted}`);
+
+            // Log achievement status
+            const achievements = achievementManager.getAllAchievements();
+            const unlockedCount = achievements.filter(a => a.unlocked).length;
+            console.log(`Achievements: ${unlockedCount}/${achievements.length} unlocked`);
+        } else {
+            console.warn('Achievement Manager initialization failed (this is normal when not running in Steam)');
+        }
+    });
+}
+
 // App event listeners
 app.whenReady().then(() => {
     createWindow();
+
     // Initialize Discord RPC
     setTimeout(() => {
         initializeDiscordRPC();
     }, 2000);
+
+    // Initialize Achievement Manager
+    setTimeout(() => {
+        initializeAchievementManager();
+    }, 3000);
 });
 
 app.on('window-all-closed', () => {
     // Disconnect Discord RPC
     if (discordRPC) {
         discordRPC.disconnect();
+    }
+
+    // Shutdown Achievement Manager
+    if (achievementManager) {
+        achievementManager.shutdown();
+        achievementManager = null;
     }
 
     if (process.platform !== 'darwin') {
@@ -258,6 +300,12 @@ app.on('window-all-closed', () => {
 app.on('activate', () => {
     if (BrowserWindow.getAllWindows().length === 0) {
         createWindow();
+
+        // Re-initialize Discord RPC and Achievement Manager for new window
+        setTimeout(() => {
+            initializeDiscordRPC();
+            initializeAchievementManager();
+        }, 2000);
     }
 });
 
@@ -265,6 +313,12 @@ app.on('before-quit', () => {
     // Ensure Discord RPC is disconnected before quitting
     if (discordRPC) {
         discordRPC.disconnect();
+    }
+
+    // Ensure Achievement Manager is shutdown before quitting
+    if (achievementManager) {
+        achievementManager.shutdown();
+        achievementManager = null;
     }
 });
 
@@ -289,4 +343,39 @@ ipcMain.handle('window-close', () => {
     if (mainWindow) {
         mainWindow.close();
     }
+});
+
+// Add IPC handlers for achievements
+ipcMain.handle('achievements-get-all', () => {
+    if (achievementManager) {
+        return achievementManager.getAllAchievements();
+    }
+    return [];
+});
+
+ipcMain.handle('achievements-get-playtime', () => {
+    if (achievementManager) {
+        return achievementManager.getFormattedPlayTime();
+    }
+    return {
+        hours: 0,
+        minutes: 0,
+        seconds: 0,
+        totalSeconds: 0,
+        formatted: '0h 0m 0s'
+    };
+});
+
+ipcMain.handle('achievements-reset', () => {
+    if (achievementManager) {
+        return achievementManager.resetAchievements();
+    }
+    return false;
+});
+
+ipcMain.handle('achievements-is-steam-available', () => {
+    if (achievementManager) {
+        return achievementManager.isSteamAvailable();
+    }
+    return false;
 });

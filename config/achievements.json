@@ -2,67 +2,66 @@
   "achievements": [
     {
       "id": 1,
+      "steamApiName": "PLAYTIME_10_MINUTE",
       "task": "Use HEAT Labs for 10 minutes",
       "name": "H - First Steps",
       "type": "playtime",
-      "steamApiName": "PLAYTIME_10_MINUTE",
       "requirement": 600
     },
     {
       "id": 2,
+      "steamApiName": "PLAYTIME_30_MINUTE",
       "task": "Use HEAT Labs for 30 minutes",
       "name": "E - Getting Into It",
       "type": "playtime",
-      "steamApiName": "PLAYTIME_30_MINUTE",
       "requirement": 1800
     },
     {
       "id": 3,
+      "steamApiName": "PLAYTIME_01_HOUR",
       "task": "Use HEAT Labs for 1 hour",
       "name": "A - Settling In",
       "type": "playtime",
-      "steamApiName": "PLAYTIME_01_HOUR",
       "requirement": 3600
     },
     {
       "id": 4,
+      "steamApiName": "PLAYTIME_02_HOUR",
       "task": "Use HEAT Labs for 2 hours",
       "name": "T - Dedicated Player",
       "type": "playtime",
-      "steamApiName": "PLAYTIME_02_HOUR",
       "requirement": 7200
     },
     {
       "id": 5,
+      "steamApiName": "PLAYTIME_05_HOUR",
       "task": "Use HEAT Labs for 5 hours",
       "name": "L - Committed",
       "type": "playtime",
-      "steamApiName": "PLAYTIME_05_HOUR",
       "requirement": 18000
     },
     {
       "id": 6,
+      "steamApiName": "PLAYTIME_10_HOUR",
       "task": "Use HEAT Labs for 10 hours",
       "name": "A - Veteran",
       "type": "playtime",
-      "steamApiName": "PLAYTIME_10_HOUR",
       "requirement": 36000
     },
     {
       "id": 7,
-      "icon": "B",
+      "steamApiName": "PLAYTIME_25_HOUR",
       "task": "Use HEAT Labs for 25 hours",
       "name": "B - Hardcore",
       "type": "playtime",
-      "steamApiName": "PLAYTIME_25_HOUR",
       "requirement": 90000
     },
     {
       "id": 8,
+      "steamApiName": "PLAYTIME_50_HOUR",
       "task": "Use HEAT Labs for 50 hours",
       "name": "S - Addicted",
       "type": "playtime",
-      "steamApiName": "PLAYTIME_50_HOUR",
       "requirement": 180000
     }
   ]

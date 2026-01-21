@@ -11,5 +11,13 @@ contextBridge.exposeInMainWorld('electronAPI', {
 
     // APIs
     platform: process.platform,
-    versions: process.versions
+    versions: process.versions,
+
+    // Achievement API
+    achievements: {
+        getAll: () => ipcRenderer.invoke('achievements-get-all'),
+        getPlaytime: () => ipcRenderer.invoke('achievements-get-playtime'),
+        reset: () => ipcRenderer.invoke('achievements-reset'),
+        isSteamAvailable: () => ipcRenderer.invoke('achievements-is-steam-available')
+    }
 });

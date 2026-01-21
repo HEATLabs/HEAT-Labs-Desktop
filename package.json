@@ -57,6 +57,7 @@
     "electron-builder": "^24.13.3"
   },
   "dependencies": {
-    "discord-rpc": "^4.0.1"
+    "discord-rpc": "^4.0.1",
+    "steamworks.js": "0.4.0"
   }
 }
