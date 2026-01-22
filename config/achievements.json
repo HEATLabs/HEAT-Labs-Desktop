@@ -63,6 +63,94 @@
       "name": "S - Addicted",
       "type": "playtime",
       "requirement": 180000
+    },
+    {
+      "id": 9,
+      "steamApiName": "VISIT_TANK_STATISTICS",
+      "task": "Visit the Tank Statistics section",
+      "name": "Gear Head",
+      "type": "visitpage",
+      "requirement": "visit_tank_statistics"
+    },
+    {
+      "id": 10,
+      "steamApiName": "VISIT_PLAYER_STATISTICS",
+      "task": "Visit the Player Statistics section",
+      "name": "Scorekeeper",
+      "type": "visitpage",
+      "requirement": "visit_player_statistics"
+    },
+    {
+      "id": 11,
+      "steamApiName": "VISIT_MAP_KNOWLEDGE",
+      "task": "Visit the Map Knowledge section",
+      "name": "Cartographer",
+      "type": "visitpage",
+      "requirement": "visit_map_knowledge"
+    },
+    {
+      "id": 12,
+      "steamApiName": "VISIT_COMMUNITY_GUIDES",
+      "task": "Visit the Community Guides section",
+      "name": "Learner",
+      "type": "visitpage",
+      "requirement": "visit_community_guides"
+    },
+    {
+      "id": 13,
+      "steamApiName": "VISIT_COMMON_BUILDS",
+      "task": "Visit the Common Builds section",
+      "name": "Strategist",
+      "type": "visitpage",
+      "requirement": "visit_common_builds"
+    },
+    {
+      "id": 14,
+      "steamApiName": "VISIT_PLAYGROUND",
+      "task": "Visit the Playground section",
+      "name": "Experimenter",
+      "type": "visitpage",
+      "requirement": "visit_playground"
+    },
+    {
+      "id": 15,
+      "steamApiName": "VISIT_GAME_NEWS",
+      "task": "Visit the Game News section",
+      "name": "Newshound",
+      "type": "visitpage",
+      "requirement": "visit_game_news"
+    },
+    {
+      "id": 16,
+      "steamApiName": "VISIT_ASSET_GALLERY",
+      "task": "Visit the Asset Gallery section",
+      "name": "Collector",
+      "type": "visitpage",
+      "requirement": "visit_asset_gallery"
+    },
+    {
+      "id": 17,
+      "steamApiName": "VISIT_TOURNAMENTS",
+      "task": "Visit our Tournaments section",
+      "name": "Competitor",
+      "type": "visitpage",
+      "requirement": "visit_tournaments"
+    },
+    {
+      "id": 18,
+      "steamApiName": "VISIT_OFFICIAL_BLOG",
+      "task": "Visit the Official Blog section",
+      "name": "Insider",
+      "type": "visitpage",
+      "requirement": "visit_official_blog"
+    },
+    {
+      "id": 19,
+      "steamApiName": "VISIT_ABOUT_THE_PROJECT",
+      "task": "Visit the About the Project section",
+      "name": "Curious Mind",
+      "type": "visitpage",
+      "requirement": "visit_about_the_project"
     }
   ]
 }
