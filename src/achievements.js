@@ -65,6 +65,10 @@ class AchievementManager {
             }));
 
             console.log(`Loaded ${this.achievements.length} achievements from config`);
+
+            this.achievements.forEach(achievement => {
+                console.log(`Achievement ID ${achievement.id}: ${achievement.steamApiName} - Requirement: ${achievement.requirement}`);
+            });
         } catch (error) {
             console.error('Failed to load achievements config:', error);
             this.achievements = this.getDefaultAchievements();
@@ -212,10 +216,10 @@ class AchievementManager {
                             this.stats.visitedPages.add(achievement.requirement);
                         }
 
-                        console.log(`Achievement already unlocked in Steam: ${achievement.name}`);
+                        console.log(`Achievement already unlocked in Steam: ${achievement.name} (ID: ${achievement.id})`);
                     }
                 } else {
-                    console.warn(`Achievement not found in Steam: ${achievement.steamApiName}`);
+                    console.warn(`Achievement not found in Steam: ${achievement.steamApiName} (ID: ${achievement.id})`);
                 }
             });
 
@@ -238,16 +242,28 @@ class AchievementManager {
                 this.achievements.forEach(achievement => {
                     if (this.stats.unlockedAchievements.has(achievement.id)) {
                         achievement.unlocked = true;
+                        console.log(`Achievement ID ${achievement.id} already unlocked in local stats: ${achievement.name}`);
                     }
                 });
 
                 console.log(`Loaded stats: ${this.stats.totalPlayTime}s playtime, ${this.stats.unlockedAchievements.size} achievements unlocked, ${this.stats.visitedPages.size} pages visited`);
+
+                // Check if visited pages should unlock achievements
+                this.checkExistingVisitedPages();
             } else {
                 console.log('No saved stats found, starting fresh');
             }
         } catch (error) {
             console.error('Failed to load stats:', error);
         }
+    }
+
+    checkExistingVisitedPages() {
+        // Check all visited pages from saved stats and unlock corresponding achievements
+        this.stats.visitedPages.forEach(requirement => {
+            console.log(`Checking visited page: ${requirement}`);
+            this.checkPageVisitAchievements(requirement);
+        });
     }
 
     saveStats() {
@@ -261,6 +277,7 @@ class AchievementManager {
             };
 
             fs.writeFileSync(this.statsFilePath, JSON.stringify(statsToSave, null, 2));
+            console.log(`Stats saved: ${statsToSave.unlockedAchievements.length} achievements unlocked`);
         } catch (error) {
             console.error('Failed to save stats:', error);
         }
@@ -331,11 +348,13 @@ class AchievementManager {
         });
     }
 
-    // Track page visits
+    // New method to track page visits
     trackPageVisit(pageTitle) {
         if (!pageTitle) return;
 
-        // Clean the page title to match our achievement
+        console.log(`Page title updated: "${pageTitle}"`);
+
+        // Clean the page title to match our achievement requirements
         const cleanTitle = pageTitle.replace(/ - HEAT Labs$/i, '').trim();
 
         // Map page titles to achievement requirements
@@ -355,7 +374,14 @@ class AchievementManager {
 
         const requirement = pageToRequirementMap[cleanTitle];
 
-        if (requirement && !this.stats.visitedPages.has(requirement)) {
+        if (!requirement) {
+            console.log(`No achievement requirement found for page: "${cleanTitle}"`);
+            return false;
+        }
+
+        console.log(`Page "${cleanTitle}" maps to requirement: "${requirement}"`);
+
+        if (!this.stats.visitedPages.has(requirement)) {
             console.log(`First visit to page: ${cleanTitle} (requirement: ${requirement})`);
             this.stats.visitedPages.add(requirement);
 
@@ -366,18 +392,22 @@ class AchievementManager {
             this.saveStats();
 
             return true;
+        } else {
+            console.log(`Page already visited: ${cleanTitle} (requirement: ${requirement})`);
         }
 
         return false;
     }
 
     checkPageVisitAchievements(requirement) {
+        console.log(`Checking achievements for requirement: ${requirement}`);
+
         this.achievements.forEach(achievement => {
             if (!achievement.unlocked &&
                 achievement.type === 'visitpage' &&
                 achievement.requirement === requirement) {
 
-                console.log(`Page visit requirement met for: ${achievement.name}`);
+                console.log(`Page visit requirement met for: ${achievement.name} (ID: ${achievement.id}, Steam: ${achievement.steamApiName})`);
                 this.unlockAchievement(achievement.id);
             }
         });
@@ -387,25 +417,27 @@ class AchievementManager {
         const achievement = this.achievements.find(a => a.id === achievementId);
 
         if (!achievement) {
-            console.error(`Achievement not found: ${achievementId}`);
+            console.error(`Achievement not found: ID ${achievementId}`);
             return;
         }
 
         if (achievement.unlocked) {
-            console.log(`Achievement already unlocked: ${achievement.name}`);
+            console.log(`Achievement already unlocked: ${achievement.name} (ID: ${achievement.id})`);
             return;
         }
 
         try {
-            console.log(`Unlocking achievement: ${achievement.name} (${achievement.steamApiName})`);
+            console.log(`Unlocking achievement: ${achievement.name} (ID: ${achievement.id}, Steam: ${achievement.steamApiName})`);
 
             // Update local state
             achievement.unlocked = true;
             this.stats.unlockedAchievements.add(achievementId);
+            console.log(`Added achievement ID ${achievementId} to unlocked achievements set`);
 
             // Unlock in Steam if available
             if (this.steamClient && this.isSteamRunning) {
                 try {
+                    console.log(`Attempting to unlock in Steam: ${achievement.steamApiName}`);
                     await this.steamClient.achievement.activate(achievement.steamApiName);
                     console.log(`Achievement unlocked in Steam: ${achievement.name}`);
                 } catch (steamError) {
