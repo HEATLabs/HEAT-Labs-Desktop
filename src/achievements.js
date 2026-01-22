@@ -17,9 +17,11 @@ class AchievementManager {
         this.stats = {
             totalPlayTime: 0,
             unlockedAchievements: new Set(),
+            visitedPages: new Set(),
             lastSessionStart: Date.now()
         };
         this.isSteamRunning = false;
+        this.pageVisitCallbacks = [];
     }
 
     async initialize() {
@@ -204,6 +206,12 @@ class AchievementManager {
                     // If unlocked in Steam, add to our local unlocked set
                     if (achievement.unlocked) {
                         this.stats.unlockedAchievements.add(achievement.id);
+
+                        // If its a visitpage achievement, add to visited pages
+                        if (achievement.type === 'visitpage') {
+                            this.stats.visitedPages.add(achievement.requirement);
+                        }
+
                         console.log(`Achievement already unlocked in Steam: ${achievement.name}`);
                     }
                 } else {
@@ -223,6 +231,7 @@ class AchievementManager {
                 const savedStats = JSON.parse(fs.readFileSync(this.statsFilePath, 'utf8'));
                 this.stats.totalPlayTime = savedStats.totalPlayTime || 0;
                 this.stats.unlockedAchievements = new Set(savedStats.unlockedAchievements || []);
+                this.stats.visitedPages = new Set(savedStats.visitedPages || []);
                 this.stats.lastSessionStart = savedStats.lastSessionStart || Date.now();
 
                 // Update achievements unlocked status
@@ -232,7 +241,7 @@ class AchievementManager {
                     }
                 });
 
-                console.log(`Loaded stats: ${this.stats.totalPlayTime}s playtime, ${this.stats.unlockedAchievements.size} achievements unlocked`);
+                console.log(`Loaded stats: ${this.stats.totalPlayTime}s playtime, ${this.stats.unlockedAchievements.size} achievements unlocked, ${this.stats.visitedPages.size} pages visited`);
             } else {
                 console.log('No saved stats found, starting fresh');
             }
@@ -246,6 +255,7 @@ class AchievementManager {
             const statsToSave = {
                 totalPlayTime: this.stats.totalPlayTime,
                 unlockedAchievements: Array.from(this.stats.unlockedAchievements),
+                visitedPages: Array.from(this.stats.visitedPages),
                 lastSessionStart: this.stats.lastSessionStart,
                 lastSaveTime: Date.now()
             };
@@ -321,6 +331,58 @@ class AchievementManager {
         });
     }
 
+    // Track page visits
+    trackPageVisit(pageTitle) {
+        if (!pageTitle) return;
+
+        // Clean the page title to match our achievement
+        const cleanTitle = pageTitle.replace(/ - HEAT Labs$/i, '').trim();
+
+        // Map page titles to achievement requirements
+        const pageToRequirementMap = {
+            'Official Blog': 'visit_official_blog',
+            'Common Builds': 'visit_common_builds',
+            'Tank Statistics': 'visit_tank_statistics',
+            'Player Statistics': 'visit_player_statistics',
+            'Map Knowledge': 'visit_map_knowledge',
+            'Community Guides': 'visit_community_guides',
+            'Playground': 'visit_playground',
+            'Game News': 'visit_game_news',
+            'Asset Gallery': 'visit_asset_gallery',
+            'Tournaments': 'visit_tournaments',
+            'About the Project': 'visit_about_the_project'
+        };
+
+        const requirement = pageToRequirementMap[cleanTitle];
+
+        if (requirement && !this.stats.visitedPages.has(requirement)) {
+            console.log(`First visit to page: ${cleanTitle} (requirement: ${requirement})`);
+            this.stats.visitedPages.add(requirement);
+
+            // Check for corresponding achievements
+            this.checkPageVisitAchievements(requirement);
+
+            // Save stats
+            this.saveStats();
+
+            return true;
+        }
+
+        return false;
+    }
+
+    checkPageVisitAchievements(requirement) {
+        this.achievements.forEach(achievement => {
+            if (!achievement.unlocked &&
+                achievement.type === 'visitpage' &&
+                achievement.requirement === requirement) {
+
+                console.log(`Page visit requirement met for: ${achievement.name}`);
+                this.unlockAchievement(achievement.id);
+            }
+        });
+    }
+
     async unlockAchievement(achievementId) {
         const achievement = this.achievements.find(a => a.id === achievementId);
 
@@ -356,9 +418,28 @@ class AchievementManager {
             // Save stats
             this.saveStats();
 
+            // Notify any listeners
+            this.notifyAchievementUnlocked(achievement);
+
         } catch (error) {
             console.error(`Failed to unlock achievement ${achievementId}:`, error);
         }
+    }
+
+    // Method to register callbacks for achievement unlocks
+    onAchievementUnlocked(callback) {
+        this.pageVisitCallbacks.push(callback);
+    }
+
+    // Method to notify listeners about achievement unlocks
+    notifyAchievementUnlocked(achievement) {
+        this.pageVisitCallbacks.forEach(callback => {
+            try {
+                callback(achievement);
+            } catch (error) {
+                console.error('Error in achievement unlock callback:', error);
+            }
+        });
     }
 
     getAchievementProgress(achievementId) {
@@ -383,6 +464,12 @@ class AchievementManager {
             return {
                 unlocked: false,
                 progress: Math.round(progress)
+            };
+        } else if (achievement.type === 'visitpage') {
+            const hasVisited = this.stats.visitedPages.has(achievement.requirement);
+            return {
+                unlocked: hasVisited,
+                progress: hasVisited ? 100 : 0
             };
         }
 
@@ -435,6 +522,7 @@ class AchievementManager {
                 achievement.unlocked = false;
             });
             this.stats.unlockedAchievements.clear();
+            this.stats.visitedPages.clear();
 
             // Save stats
             this.saveStats();

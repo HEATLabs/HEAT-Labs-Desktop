@@ -81,10 +81,15 @@ function createWindow() {
         };
     });
 
-    // Update Discord RPC when page title changes
+    // Update Discord RPC and track page visits when page title changes
     mainWindow.webContents.on('page-title-updated', (event, title) => {
         if (discordRPC && discordRPC.isConnected()) {
             discordRPC.updateWithPage(title);
+        }
+
+        // Track page visits for achievements
+        if (achievementManager) {
+            achievementManager.trackPageVisit(title);
         }
     });
 
