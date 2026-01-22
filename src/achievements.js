@@ -238,7 +238,8 @@ class AchievementManager {
                 this.stats.visitedPages = new Set(savedStats.visitedPages || []);
                 this.stats.lastSessionStart = savedStats.lastSessionStart || Date.now();
 
-                // Update achievements unlocked status
+                console.log(`Loaded stats: ${this.stats.totalPlayTime}s playtime, ${this.stats.unlockedAchievements.size} achievements unlocked, ${this.stats.visitedPages.size} pages visited`);
+
                 this.achievements.forEach(achievement => {
                     if (this.stats.unlockedAchievements.has(achievement.id)) {
                         achievement.unlocked = true;
@@ -246,10 +247,9 @@ class AchievementManager {
                     }
                 });
 
-                console.log(`Loaded stats: ${this.stats.totalPlayTime}s playtime, ${this.stats.unlockedAchievements.size} achievements unlocked, ${this.stats.visitedPages.size} pages visited`);
-
                 // Check if visited pages should unlock achievements
                 this.checkExistingVisitedPages();
+
             } else {
                 console.log('No saved stats found, starting fresh');
             }
@@ -261,9 +261,47 @@ class AchievementManager {
     checkExistingVisitedPages() {
         // Check all visited pages from saved stats and unlock corresponding achievements
         this.stats.visitedPages.forEach(requirement => {
-            console.log(`Checking visited page: ${requirement}`);
-            this.checkPageVisitAchievements(requirement);
+            console.log(`Checking visited page from saved stats: ${requirement}`);
+
+            // Find the achievement for this requirement
+            this.achievements.forEach(achievement => {
+                if (achievement.type === 'visitpage' &&
+                    achievement.requirement === requirement &&
+                    !achievement.unlocked) {
+
+                    console.log(`Found ununlocked achievement for requirement ${requirement}: ${achievement.name} (ID: ${achievement.id})`);
+
+                    // Mark as unlocked locally
+                    achievement.unlocked = true;
+                    this.stats.unlockedAchievements.add(achievement.id);
+
+                    // Also unlock in Steam if available
+                    if (this.steamClient && this.isSteamRunning) {
+                        console.log(`Attempting to unlock in Steam from saved stats: ${achievement.steamApiName}`);
+                        this.unlockAchievementInSteam(achievement.steamApiName).catch(error => {
+                            console.error(`Failed to unlock achievement in Steam: ${error.message}`);
+                        });
+                    }
+                }
+            });
         });
+    }
+
+    async unlockAchievementInSteam(steamApiName) {
+        if (!this.steamClient || !this.isSteamRunning) {
+            console.log(`Steam not running, skipping unlock for: ${steamApiName}`);
+            return false;
+        }
+
+        try {
+            console.log(`Unlocking achievement in Steam: ${steamApiName}`);
+            await this.steamClient.achievement.activate(steamApiName);
+            console.log(`Successfully unlocked in Steam: ${steamApiName}`);
+            return true;
+        } catch (steamError) {
+            console.error(`Failed to unlock achievement in Steam: ${steamError.message}`);
+            return false;
+        }
     }
 
     saveStats() {
