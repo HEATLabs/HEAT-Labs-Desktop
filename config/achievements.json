@@ -151,6 +151,14 @@
       "name": "Curious Mind",
       "type": "visitpage",
       "requirement": "visit_about_the_project"
+    },
+    {
+      "id": 20,
+      "steamApiName": "SCHRODINGERS_ACHIEVEMENT",
+      "task": "Unlocked and locked at the same time",
+      "name": "Schrodinger's Achievement",
+      "type": "easteregg",
+      "requirement": "impossible"
     }
   ]
 }
