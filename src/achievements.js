@@ -147,6 +147,177 @@ class AchievementManager {
                 requirement: 180000,
                 type: 'playtime',
                 unlocked: false
+            },
+            {
+                id: 9,
+                steamApiName: 'VISIT_TANK_STATISTICS',
+                name: 'Gear Head',
+                task: 'Visit the Tank Statistics section',
+                requirement: 'visit_tank_statistics',
+                type: 'visitpage',
+                unlocked: false
+            },
+            {
+                id: 10,
+                steamApiName: 'VISIT_PLAYER_STATISTICS',
+                name: 'Scorekeeper',
+                task: 'Visit the Player Statistics section',
+                requirement: 'visit_player_statistics',
+                type: 'visitpage',
+                unlocked: false
+            },
+            {
+                id: 11,
+                steamApiName: 'VISIT_MAP_KNOWLEDGE',
+                name: 'Cartographer',
+                task: 'Visit the Map Knowledge section',
+                requirement: 'visit_map_knowledge',
+                type: 'visitpage',
+                unlocked: false
+            },
+            {
+                id: 12,
+                steamApiName: 'VISIT_COMMUNITY_GUIDES',
+                name: 'Learner',
+                task: 'Visit the Community Guides section',
+                requirement: 'visit_community_guides',
+                type: 'visitpage',
+                unlocked: false
+            },
+            {
+                id: 13,
+                steamApiName: 'VISIT_COMMON_BUILDS',
+                name: 'Strategist',
+                task: 'Visit the Common Builds section',
+                requirement: 'visit_common_builds',
+                type: 'visitpage',
+                unlocked: false
+            },
+            {
+                id: 14,
+                steamApiName: 'VISIT_PLAYGROUND',
+                name: 'Experimenter',
+                task: 'Visit the Playground section',
+                requirement: 'visit_playground',
+                type: 'visitpage',
+                unlocked: false
+            },
+            {
+                id: 15,
+                steamApiName: 'VISIT_GAME_NEWS',
+                name: 'Newshound',
+                task: 'Visit the Game News section',
+                requirement: 'visit_game_news',
+                type: 'visitpage',
+                unlocked: false
+            },
+            {
+                id: 16,
+                steamApiName: 'VISIT_ASSET_GALLERY',
+                name: 'Collector',
+                task: 'Visit the Asset Gallery section',
+                requirement: 'visit_asset_gallery',
+                type: 'visitpage',
+                unlocked: false
+            },
+            {
+                id: 17,
+                steamApiName: 'VISIT_TOURNAMENTS',
+                name: 'Competitor',
+                task: 'Visit our Tournaments section',
+                requirement: 'visit_tournaments',
+                type: 'visitpage',
+                unlocked: false
+            },
+            {
+                id: 18,
+                steamApiName: 'VISIT_OFFICIAL_BLOG',
+                name: 'Insider',
+                task: 'Visit the Official Blog section',
+                requirement: 'visit_official_blog',
+                type: 'visitpage',
+                unlocked: false
+            },
+            {
+                id: 19,
+                steamApiName: 'VISIT_ABOUT_THE_PROJECT',
+                name: 'Curious Mind',
+                task: 'Visit the About the Project section',
+                requirement: 'visit_about_the_project',
+                type: 'visitpage',
+                unlocked: false
+            },
+            {
+                id: 20,
+                steamApiName: 'PLAYTIME_100_HOUR',
+                name: 'S - Lifestyle Choice',
+                task: 'Use HEAT Labs for 100 hours',
+                requirement: 360000,
+                type: 'playtime',
+                unlocked: false
+            },
+            {
+                id: 21,
+                steamApiName: 'PLAYTIME_250_HOUR',
+                name: 'E - Please Go Outside',
+                task: 'Use HEAT Labs for 250 hours',
+                requirement: 900000,
+                type: 'playtime',
+                unlocked: false
+            },
+            {
+                id: 22,
+                steamApiName: 'PLAYTIME_500_HOUR',
+                name: 'E - This Is Concerning',
+                task: 'Use HEAT Labs for 500 hours',
+                requirement: 1800000,
+                type: 'playtime',
+                unlocked: false
+            },
+            {
+                id: 23,
+                steamApiName: 'PLAYTIME_1000_HOUR',
+                name: 'K - Seek Professional Help',
+                task: 'Use HEAT Labs for 1000 hours',
+                requirement: 3600000,
+                type: 'playtime',
+                unlocked: false
+            },
+            {
+                id: 24,
+                steamApiName: 'PLAYTIME_2500_HOUR',
+                name: 'H - There Is No Escape',
+                task: 'Use HEAT Labs for 2500 hours',
+                requirement: 9000000,
+                type: 'playtime',
+                unlocked: false
+            },
+            {
+                id: 25,
+                steamApiName: 'PLAYTIME_5000_HOUR',
+                name: 'E - Touching Grass Is A Myth',
+                task: 'Use HEAT Labs for 5000 hours',
+                requirement: 18000000,
+                type: 'playtime',
+                unlocked: false
+            },
+            {
+                id: 26,
+                steamApiName: 'PLAYTIME_7500_HOUR',
+                name: 'L - You Live Here Now',
+                task: 'Use HEAT Labs for 7500 hours',
+                requirement: 27000000,
+                type: 'playtime',
+                unlocked: false
+            },
+            {
+                id: 27,
+                steamApiName: 'PLAYTIME_10000_HOUR',
+                name: 'P - Time Has Lost All Meaning',
+                task: 'Use HEAT Labs for 10000 hours',
+                requirement: 36000000,
+                type: 'playtime',
+                unlocked: false
             }
         ];
     }
