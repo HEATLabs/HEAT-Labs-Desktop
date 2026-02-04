@@ -153,7 +153,7 @@
       "requirement": "visit_about_the_project"
     },
     {
-      "id": 21,
+      "id": 20,
       "steamApiName": "PLAYTIME_100_HOUR",
       "task": "Use HEAT Labs for 100 hours",
       "name": "S - Lifestyle Choice",
@@ -161,7 +161,7 @@
       "requirement": 360000
     },
     {
-      "id": 22,
+      "id": 21,
       "steamApiName": "PLAYTIME_250_HOUR",
       "task": "Use HEAT Labs for 250 hours",
       "name": "E - Please Go Outside",
@@ -169,7 +169,7 @@
       "requirement": 900000
     },
     {
-      "id": 23,
+      "id": 22,
       "steamApiName": "PLAYTIME_500_HOUR",
       "task": "Use HEAT Labs for 500 hours",
       "name": "E - This Is Concerning",
@@ -177,7 +177,7 @@
       "requirement": 1800000
     },
     {
-      "id": 24,
+      "id": 23,
       "steamApiName": "PLAYTIME_1000_HOUR",
       "task": "Use HEAT Labs for 1000 hours",
       "name": "K - Seek Professional Help",
@@ -185,7 +185,7 @@
       "requirement": 3600000
     },
     {
-      "id": 25,
+      "id": 24,
       "steamApiName": "PLAYTIME_2500_HOUR",
       "task": "Use HEAT Labs for 2500 hours",
       "name": "H - There Is No Escape",
@@ -193,7 +193,7 @@
       "requirement": 9000000
     },
     {
-      "id": 26,
+      "id": 25,
       "steamApiName": "PLAYTIME_5000_HOUR",
       "task": "Use HEAT Labs for 5000 hours",
       "name": "E - Touching Grass Is A Myth",
@@ -201,7 +201,7 @@
       "requirement": 18000000
     },
     {
-      "id": 27,
+      "id": 26,
       "steamApiName": "PLAYTIME_7500_HOUR",
       "task": "Use HEAT Labs for 7500 hours",
       "name": "L - You Live Here Now",
@@ -209,7 +209,7 @@
       "requirement": 27000000
     },
     {
-      "id": 28,
+      "id": 27,
       "steamApiName": "PLAYTIME_10000_HOUR",
       "task": "Use HEAT Labs for 10000 hours",
       "name": "P - Time Has Lost All Meaning",
