@@ -27,9 +27,9 @@ function createWindow() {
 
     // Create the browser window with custom frame
     mainWindow = new BrowserWindow({
-        width: 1200,
+        width: 1300,
         height: 1000,
-        minWidth: 1200,
+        minWidth: 1300,
         minHeight: 800,
         frame: false,
         titleBarStyle: 'hidden',
