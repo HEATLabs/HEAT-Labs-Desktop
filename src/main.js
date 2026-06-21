@@ -118,6 +118,16 @@ function createWindow() {
           bar.innerHTML = \`
             <img src="https://views.heatlabs.net/api/track/pcwstats-tracker-pixel-desktop-app.png" alt="HEAT Labs Tracking View Counter" style="position:absolute;width:1px;height:1px;opacity:0;pointer-events:none;" class="heatlabs-tracking-pixel" data-page="desktop-app">
             <div class="electron-title-bar-left">
+              <button class="electron-title-bar-button nav-btn back-btn" title="Go Back">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <polyline points="15 18 9 12 15 6"></polyline>
+                </svg>
+              </button>
+              <button class="electron-title-bar-button nav-btn forward-btn" title="Go Forward">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <polyline points="9 18 15 12 9 6"></polyline>
+                </svg>
+              </button>
               <span class="electron-title-bar-title">HEAT Labs Desktop</span>
             </div>
             <div class="electron-title-bar-controls">
@@ -147,6 +157,8 @@ function createWindow() {
           const minimizeBtn = bar.querySelector('.minimize-btn');
           const maximizeBtn = bar.querySelector('.maximize-btn');
           const closeBtn = bar.querySelector('.close-btn');
+          const backBtn = bar.querySelector('.back-btn');
+          const forwardBtn = bar.querySelector('.forward-btn');
 
           if (minimizeBtn) {
             minimizeBtn.addEventListener('click', () => {
@@ -163,6 +175,18 @@ function createWindow() {
           if (closeBtn) {
             closeBtn.addEventListener('click', () => {
               window.electronAPI?.close();
+            });
+          }
+
+          if (backBtn) {
+            backBtn.addEventListener('click', () => {
+              window.history.back();
+            });
+          }
+
+          if (forwardBtn) {
+            forwardBtn.addEventListener('click', () => {
+              window.history.forward();
             });
           }
         };
