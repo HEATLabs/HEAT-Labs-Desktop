@@ -91,7 +91,7 @@
     {
       "id": 12,
       "steamApiName": "VISIT_COMMUNITY_GUIDES",
-      "task": "Visit the Community Guides section",
+      "task": "Visit the Game Guides section",
       "name": "Learner",
       "type": "visitpage",
       "requirement": "visit_community_guides"

@@ -179,7 +179,7 @@ class AchievementManager {
                 id: 12,
                 steamApiName: 'VISIT_COMMUNITY_GUIDES',
                 name: 'Learner',
-                task: 'Visit the Community Guides section',
+                task: 'Visit the Game Guides section',
                 requirement: 'visit_community_guides',
                 type: 'visitpage',
                 unlocked: false
@@ -573,7 +573,7 @@ class AchievementManager {
             'Tank Statistics': 'visit_tank_statistics',
             'Player Statistics': 'visit_player_statistics',
             'Map Knowledge': 'visit_map_knowledge',
-            'Community Guides': 'visit_community_guides',
+            'Game Guides': 'visit_community_guides',
             'Playground': 'visit_playground',
             'Game News': 'visit_game_news',
             'Asset Gallery': 'visit_asset_gallery',
